@@ -204,8 +204,9 @@ import json, re, sys, shlex
 with open("$SOURCE_JSON") as f:
     text = f.read()
 
-# Strip JS-style comments (// ...) that devcontainer.json allows
+# Strip JS-style comments and trailing commas (JSONC -> JSON)
 text = re.sub(r'//.*', '', text)
+text = re.sub(r',\s*([\]}])', r'\1', text)
 data = json.loads(text)
 
 base_image = data.get('image', '')
@@ -601,8 +602,9 @@ import json, re
 with open("$source") as f:
     text = f.read()
 
-# Preserve comment lines for reference, but strip for parsing
+# Preserve comment lines for reference, but strip for parsing (JSONC -> JSON)
 clean = re.sub(r'//.*', '', text)
+clean = re.sub(r',\s*([\]}])', r'\1', clean)
 data = json.loads(clean)
 
 # Set the container source based on variant
